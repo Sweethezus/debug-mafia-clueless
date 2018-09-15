@@ -1,29 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace ClueLessServer
 {
-    // To learn more about Microsoft Azure WebJobs SDK, please see https://go.microsoft.com/fwlink/?LinkID=320976
-    class Program
+    public class Program
     {
-        // Please set the following connection strings in app.config for this WebJob to run:
-        // AzureWebJobsDashboard and AzureWebJobsStorage
-        static void Main()
+        public static void Main(string[] args)
         {
-            var config = new JobHostConfiguration();
-
-            if (config.IsDevelopment)
-            {
-                config.UseDevelopmentSettings();
-            }
-
-            var host = new JobHost(config);
-            // The following code ensures that the WebJob will be running continuously
-            host.RunAndBlock();
+            CreateWebHostBuilder(args).Build().Run();
         }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>();
     }
 }
