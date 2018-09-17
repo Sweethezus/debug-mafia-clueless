@@ -1,17 +1,25 @@
-using System;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Net.Http;
-using System.Web;
-using System.Net;
-using System.IO;
-using System.Xml.Serialization;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml.Serialization;
 
-namespace HttpClientSample
+namespace ClueLessClient
 {
-    static class Program
+    public partial class Form1 : Form
     {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
         [XmlRoot(ElementName = "Document")]
         public class Document
         {
@@ -21,16 +29,9 @@ namespace HttpClientSample
             public string Password { get; set; }
         }
 
-        static void Main()
+        private void queryButton_Click(object sender, EventArgs e)
         {
-            MakeRequest();
-            Console.WriteLine("Hit ENTER to exit...");
-            Console.ReadLine();
-        }
-
-        static async void MakeRequest()
-        {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://clueless.azure-api.net/echo/resource");
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(serverURL_Box.Text + "/echo/resource");
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
             httpWebRequest.Headers.Add("Ocp-Apim-Subscription-Key", "e4c1961185b74874a37dbf72e8adeddb");
@@ -40,7 +41,7 @@ namespace HttpClientSample
                 string json = "{\"user\":\"test\"," +
                               "\"password\":\"bla\"}";
 
-                Console.WriteLine(json);
+                responseBox.Text = json;
                 streamWriter.Write(json);
                 streamWriter.Flush();
                 streamWriter.Close();
@@ -52,9 +53,9 @@ namespace HttpClientSample
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {
                 var result = streamReader.ReadToEnd().Trim('\0');
-                Console.WriteLine(result);
-            }
+                responseBox.Text += result;
 
+            }
         }
     }
 }
